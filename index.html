@@ -95,7 +95,8 @@ nav{position:sticky;top:0;z-index:80;background:rgb(0 0 0 /.72);
 /* The lede promises an icon in the Dock, so the hero shows one. Two SVGs share
    the same <symbol> tiles: a viewBox can't be changed from CSS, and one dock
    scaled down to a phone puts 24pt icons on screen. */
-.dock{position:relative;margin:clamp(46px,6vw,74px) auto 0;width:100%;max-width:920px}
+.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);margin:0;width:100%;max-width:920px;z-index:60;pointer-events:none}
+.dock .wide,.dock .narrow{pointer-events:auto}
 /* glass over pure black reads as a grey bar — a hint of desktop behind it is what
    makes the panel look lit rather than filled */
 .dock::before{content:"";position:absolute;left:50%;top:50%;width:112%;height:300%;
@@ -468,7 +469,7 @@ footer a:hover{color:var(--w)}
       <a class="btn btn-s" href="#build">See how it works ›</a>
     </div>
     <p class="specline rv" id="heroSpecline">Apple Silicon · macOS 27 · Rosetta 2 required</p>
-    <div class="dock rv">
+    <div class="dock">
       <svg class="wide" viewBox="0 0 893 86" role="img" aria-label="A Mac Dock holding games wrapped by Mullion">
         <rect x=".9" y=".9" width="891.0" height="84.2" rx="24" fill="url(#dkg)" stroke="url(#dks)" stroke-width="1.1"/>
         <path d="M24 1.6H869" stroke="#fff" stroke-opacity=".3" stroke-width="1.1" stroke-linecap="round"/>
