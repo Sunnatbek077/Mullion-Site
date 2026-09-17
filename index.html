@@ -95,8 +95,12 @@ nav{position:sticky;top:0;z-index:80;background:rgb(0 0 0 /.72);
 /* The lede promises an icon in the Dock, so the hero shows one. Two SVGs share
    the same <symbol> tiles: a viewBox can't be changed from CSS, and one dock
    scaled down to a phone puts 24pt icons on screen. */
-.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);margin:0;width:100%;max-width:920px;z-index:60;pointer-events:none}
+.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);margin:0;width:100%;max-width:920px;z-index:60;pointer-events:none;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .35s ease}
+.dock.hide{transform:translateX(-50%) translateY(160px);opacity:0}
+.dock.hide .wide,.dock.hide .narrow{pointer-events:none}
 .dock .wide,.dock .narrow{pointer-events:auto}
+@media(prefers-reduced-motion: reduce){.dock{transition:opacity .2s ease}.dock.hide{transform:translateX(-50%)}}
 /* glass over pure black reads as a grey bar — a hint of desktop behind it is what
    makes the panel look lit rather than filled */
 .dock::before{content:"";position:absolute;left:50%;top:50%;width:112%;height:300%;
@@ -963,5 +967,25 @@ footer a:hover{color:var(--w)}
   }
 
   checkForLatestRelease();
+
+  // ── Dock hides once the "No Mac version. Playing anyway." (#games)
+  // section reaches the viewport, and returns once you scroll back above it.
+  var dockEl = document.querySelector('.dock');
+  var gamesSection = document.getElementById('games');
+  if (dockEl && gamesSection){
+    var ticking = false;
+    function updateDock(){
+      var rect = gamesSection.getBoundingClientRect();
+      var pastThreshold = rect.top <= window.innerHeight * 0.3;
+      dockEl.classList.toggle('hide', pastThreshold);
+      ticking = false;
+    }
+    function onScroll(){
+      if (!ticking){ ticking = true; requestAnimationFrame(updateDock); }
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+    updateDock();
+  }
 })();
 </script>
