@@ -1,7 +1,9 @@
 # Mullion — site
 
 Landing page for Mullion. `index.html` holds all the CSS and SVG inline; alongside it
-are `img/` (four gameplay stills), `js/` (a vendored three.js) and `models/` (the
+are `img/` (gameplay stills, the two MacBook cut-outs, the favicon and touch icon, and
+`img/dock/` — the Dock's game icons, kept as files rather than base64 in the page),
+`js/` (a vendored three.js) and `models/` (the
 MacBook). Google Fonts is still the only external host. **Serve the folder — don't open
 the file directly:** ES-module imports need an origin, so `file://` silently falls back
 to the static screenshot.
@@ -50,7 +52,7 @@ screenshot — the same panel treatment the three games below it get. Nothing tr
 cursor. `.scrub` is the scroll distance the sequence gets (210vh); the sticky `.pin`
 inside it is what you actually see.
 
-**The module carries a version stamp — `js/macbook.js?v=3` — and it is not decoration.**
+**The module carries a version stamp — `js/macbook.js?v=8` — and it is not decoration.**
 `python3 -m http.server` sends no cache headers, so an edited module keeps being served
 from the browser's cache: you fix the file, reload, and are still looking at the previous
 build. Two rounds of "it is still broken" here were exactly that. Bump the number when you
