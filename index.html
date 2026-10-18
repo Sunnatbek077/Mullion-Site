@@ -44,6 +44,18 @@ body{
 .dark{background:var(--black);color:var(--w)}
 .deep{background:var(--near);color:var(--w)}
 .lite{background:var(--light);color:var(--k)}
+/* the hero's grid, carried down at a whisper: each dark scene opens on a lit
+   hairline and a few rows of grid that are gone before the content starts */
+.scene.dark,.scene.deep{position:relative;isolation:isolate}
+.scene.dark::before,.scene.deep::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgb(255 255 255 /.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(255 255 255 /.045) 1px,transparent 1px);
+  background-size:64px 64px;background-position:calc(50% - 32px) 0;
+  -webkit-mask:radial-gradient(ellipse 58% 460px at 50% 0,#000 10%,transparent 100%);
+  mask:radial-gradient(ellipse 58% 460px at 50% 0,#000 10%,transparent 100%)}
+.scene.dark::after,.scene.deep::after{content:"";position:absolute;left:50%;top:0;z-index:-1;
+  width:min(720px,80%);height:1px;transform:translateX(-50%);pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgb(111 168 220 /.55) 35%,rgb(224 164 88 /.45) 65%,transparent)}
 .col{width:var(--col);margin:0 auto}
 .mid{text-align:center}
 .mid p{margin-left:auto;margin-right:auto}
@@ -121,6 +133,59 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
 .btn-s{color:var(--cold);border-color:transparent}
 .btn-s:hover{text-decoration:underline}
 .specline{font-size:13px;color:var(--w-3);letter-spacing:-.005em}
+
+/* the version chip — what shipped last, one click from the download */
+.chip{display:inline-flex;align-items:center;gap:10px;margin:0 0 26px;padding:6px 14px 6px 11px;
+  border:1px solid var(--line-d);border-radius:99px;background:rgb(255 255 255 /.035);
+  font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.01em;color:var(--w-2);
+  text-decoration:none;transition:border-color .2s,color .2s,background .2s}
+.chip:hover{border-color:#3A3A42;color:var(--w);background:rgb(255 255 255 /.06)}
+.chip .live{position:relative;width:7px;height:7px;border-radius:50%;background:#00AD83;flex:none}
+.chip .live::after{content:"";position:absolute;inset:0;border-radius:50%;background:#00AD83;
+  animation:ping 2.2s cubic-bezier(0,0,.2,1) infinite}
+.chip .ar{color:var(--w-3);transition:transform .2s}
+.chip:hover .ar{transform:translateX(3px);color:var(--w)}
+@keyframes ping{75%,100%{transform:scale(2.6);opacity:0}}
+
+/* ── hero backdrop: an engineering grid ───────────────── */
+/* The page is about a translation layer, so the backdrop is drawn the way the work
+   looks: a 64px grid with signal running along its lines, the first bytes of a
+   Windows executable on one side and the wrap it turns into on the other. All of it
+   sits under .col and fades out before the headline has to compete with it. */
+.hero{background:var(--black) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hgrid{position:absolute;inset:0;pointer-events:none;
+  -webkit-mask:radial-gradient(ellipse 72% 78% at 50% 0%,#000 22%,transparent 74%);
+  mask:radial-gradient(ellipse 72% 78% at 50% 0%,#000 22%,transparent 74%)}
+/* lines fall at 50% ± 32px + n·64px across, n·64px down — the pulses below use the same sums */
+.hgrid::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgb(255 255 255 /.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(255 255 255 /.06) 1px,transparent 1px);
+  background-size:64px 64px;background-position:calc(50% - 32px) 0}
+/* a few cells lit, as if selected */
+.hgrid .cell{position:absolute;width:63px;height:63px;margin:1px 0 0 1px;
+  left:calc(50% - 32px + var(--x) * 64px);top:calc(var(--y) * 64px);
+  background:var(--c,rgb(111 168 220 /.07))}
+.hgrid .p{position:absolute;opacity:0;animation:var(--a) var(--t,7s) linear var(--d,0s) infinite}
+.hgrid .p.h{left:0;top:calc(var(--y) * 64px);width:180px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--c,var(--cold)),transparent);--a:px}
+.hgrid .p.v{top:0;left:calc(50% - 32px + var(--x) * 64px);width:1px;height:150px;
+  background:linear-gradient(180deg,transparent,var(--c,var(--cold)),transparent);--a:py}
+@keyframes px{0%{transform:translateX(-200px);opacity:0}8%,86%{opacity:1}100%{transform:translateX(100vw);opacity:0}}
+@keyframes py{0%{transform:translateY(-160px);opacity:0}8%,80%{opacity:1}100%{transform:translateY(780px);opacity:0}}
+
+.hsrc{position:absolute;top:clamp(120px,17vh,170px);margin:0;pointer-events:none;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:2;letter-spacing:.02em;
+  color:rgb(255 255 255 /.17);white-space:pre;
+  -webkit-mask:linear-gradient(180deg,#000 40%,transparent);mask:linear-gradient(180deg,#000 40%,transparent)}
+.hsrc.hex{left:max(28px,calc(50% - 690px))}
+.hsrc.sh{right:max(28px,calc(50% - 690px))}
+.hsrc .o{color:rgb(255 255 255 /.09)}
+.hsrc .k{color:rgb(111 168 220 /.5)}
+.hsrc .w{color:rgb(224 164 88 /.6)}
+.hsrc .ok{color:rgb(0 173 131 /.6)}
+.hsrc .cm{color:rgb(255 255 255 /.1)}
+@media(max-width:1279px){.hsrc{display:none}}
+@media(prefers-reduced-motion:reduce){.hgrid .p,.chip .live::after{animation:none;display:none}}
 
 /* ── the Dock ─────────────────────────────────────────── */
 /* The lede promises an icon in the Dock, so the hero shows one. Two SVGs share
@@ -529,9 +594,49 @@ footer a:hover{color:var(--w)}
 </nav>
 
 <header class="hero dark">
+  <div class="hgrid" aria-hidden="true">
+    <i class="cell" style="--x:-5;--y:2"></i>
+    <i class="cell" style="--x:4;--y:1;--c:rgb(224 164 88 /.06)"></i>
+    <i class="cell" style="--x:7;--y:4"></i>
+    <i class="cell" style="--x:-8;--y:5;--c:rgb(0 173 131 /.06)"></i>
+    <i class="p h" style="--y:2;--t:8s"></i>
+    <i class="p h" style="--y:5;--t:10s;--d:3s;--c:var(--warm)"></i>
+    <i class="p h" style="--y:8;--t:7s;--d:1.5s"></i>
+    <i class="p v" style="--x:-6;--t:6s;--d:.8s"></i>
+    <i class="p v" style="--x:5;--t:7s;--d:2.6s;--c:var(--warm)"></i>
+    <i class="p v" style="--x:9;--t:8s;--d:4.2s"></i>
+    <i class="p v" style="--x:-10;--t:6.5s;--d:5.4s;--c:#00AD83"></i>
+  </div>
+  <!-- the first bytes of a Windows executable: MZ, the DOS stub, and the PE header
+       whose machine field (64 86) is how Mullion knows the game is x64 -->
+<pre class="hsrc hex" aria-hidden="true"><span class="o">0000</span>  <span class="k">4D 5A</span> 90 00 03 00 00 00  <span class="o">MZ......</span>
+<span class="o">0008</span>  04 00 00 00 FF FF 00 00  <span class="o">........</span>
+<span class="o">0018</span>  40 00 00 00 00 00 00 00  <span class="o">@.......</span>
+<span class="o">  ⋮</span>
+<span class="o">0040</span>  0E 1F BA 0E 00 B4 09 CD  <span class="o">........</span>
+<span class="o">0048</span>  21 B8 01 4C CD 21 54 68  <span class="o">!..L.!Th</span>
+<span class="o">0050</span>  69 73 20 70 72 6F 67 72  <span class="o">is progr</span>
+<span class="o">0058</span>  61 6D 20 63 61 6E 6E 6F  <span class="o">am canno</span>
+<span class="o">0060</span>  74 20 62 65 20 72 75 6E  <span class="o">t be run</span>
+<span class="o">0068</span>  20 69 6E 20 44 4F 53 20  <span class="o"> in DOS </span>
+<span class="o">0070</span>  6D 6F 64 65 2E 0D 0D 0A  <span class="o">mode....</span>
+<span class="o">  ⋮</span>
+<span class="o">00F8</span>  <span class="k">50 45 00 00</span> <span class="w">64 86</span> 07 00  <span class="o">PE..</span><span class="w">d.</span><span class="o">..</span>  <span class="cm">; x64</span></pre>
+  <!-- what that executable becomes: the wrap, step by step -->
+<pre class="hsrc sh" aria-hidden="true"><span class="cm"># Red Dead Redemption 2.app</span>
+cp -c -R Base Prefixes/RDR2
+export WINEPREFIX=~/Mullion/Prefixes/RDR2
+winetricks -q vcrun2022 dotnet48
+wine reg add 'HKCU\Software\Wine' \
+     /v Version /d win10 /f
+export <span class="k">D3DM_ENABLE_METALFX</span>=1
+xattr -dr com.apple.quarantine RDR2.app
+codesign --verify RDR2.app
+<span class="ok">✓ RDR2.app — ready</span></pre>
   <div class="bloom"></div>
   <div class="col mid">
     <div class="appicon rv"><svg viewBox="0 0 1024 1024"><use href="#icon"/></svg></div>
+    <div class="rv"><a class="chip" href="#specs"><span class="live"></span><span id="heroChip">Public beta</span><span class="ar">→</span></a></div>
     <h1 class="rv">Discover a whole new level<br>of Mac gaming.<br><span class="grad">Windows games. Now Mac apps.</span></h1>
     <p class="lede rv">The games your Mac was never supposed to run — each one a real <code>.app</code>, launching from your Dock like anything else. No virtual machine, no Windows to install.</p>
     <div class="cta rv">
@@ -1048,6 +1153,9 @@ footer a:hover{color:var(--w)}
       hero.setAttribute('download', fileName);
       hero.textContent = 'Download beta for Mac — v' + release.version;
     }
+
+    var chip = document.getElementById('heroChip');
+    if (chip) chip.textContent = 'v' + release.version + ' · public beta';
 
     var specline = document.getElementById('heroSpecline');
     if (specline && release.minimumSystemVersion){
