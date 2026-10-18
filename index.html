@@ -46,7 +46,7 @@ body{
 .lite{background:var(--light);color:var(--k)}
 /* the hero's grid, carried down at a whisper: each dark scene opens on a lit
    hairline and a few rows of grid that are gone before the content starts */
-.scene.dark,.scene.deep{position:relative;isolation:isolate}
+.scene.dark,.scene.deep{position:relative;isolation:isolate;overflow-x:clip}
 .scene.dark::before,.scene.deep::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background-image:linear-gradient(rgb(255 255 255 /.045) 1px,transparent 1px),
     linear-gradient(90deg,rgb(255 255 255 /.045) 1px,transparent 1px);
@@ -115,15 +115,21 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
 @media(prefers-reduced-motion:reduce){.mt span,.nv ul{transition:none}}
 
 /* ── hero ─────────────────────────────────────────────── */
-.hero{position:relative;overflow:hidden;padding:clamp(56px,9vh,104px) 0 clamp(72px,11vh,124px)}
+/* Sized by height as well as width: the first screen has to hold the icon, the
+   headline and the download button *above* the Dock, which is fixed to the bottom
+   of the window. Sized by width alone, a 1440×800 window put the button 165px
+   under the Dock line and the Dock had to hide on load. */
+.hero{position:relative;overflow:hidden;padding:clamp(14px,3.6vh,104px) 0 clamp(72px,11vh,124px)}
+.hero h1{font-size:clamp(32px,min(6.4vw,7.2vh),74px);margin-bottom:clamp(14px,2.4vh,22px)}
 .bloom{position:absolute;left:50%;top:2%;width:min(1000px,150vw);aspect-ratio:1;
   transform:translateX(-50%);pointer-events:none;
   background:radial-gradient(circle,rgb(111 168 220 /.16) 0%,rgb(224 164 88 /.07) 34%,transparent 62%)}
 .hero .col{position:relative}
-.appicon{width:clamp(112px,17vw,168px);height:clamp(112px,17vw,168px);margin:0 auto 30px;
+.appicon{width:clamp(80px,min(17vw,13vh),168px);height:clamp(80px,min(17vw,13vh),168px);
+  margin:0 auto clamp(14px,2.6vh,30px);
   filter:drop-shadow(0 28px 60px rgb(0 0 0 /.85))}
 .appicon svg{display:block;width:100%;height:100%}
-.lede{font-size:clamp(18px,2.1vw,23px);color:var(--w-2);max-width:640px;margin:0 auto 34px}
+.lede{font-size:clamp(17px,min(2.1vw,2.5vh),23px);color:var(--w-2);max-width:660px;margin:0 auto clamp(20px,3.4vh,34px)}
 .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
 .btn{font-size:15px;font-weight:600;letter-spacing:-.01em;padding:13px 26px;border-radius:980px;
   text-decoration:none;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px}
@@ -135,7 +141,7 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
 .specline{font-size:13px;color:var(--w-3);letter-spacing:-.005em}
 
 /* the version chip — what shipped last, one click from the download */
-.chip{display:inline-flex;align-items:center;gap:10px;margin:0 0 26px;padding:6px 14px 6px 11px;
+.chip{display:inline-flex;align-items:center;gap:10px;margin:0 0 clamp(14px,2.4vh,26px);padding:6px 14px 6px 11px;
   border:1px solid var(--line-d);border-radius:99px;background:rgb(255 255 255 /.035);
   font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.01em;color:var(--w-2);
   text-decoration:none;transition:border-color .2s,color .2s,background .2s}
@@ -191,7 +197,7 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
 /* The lede promises an icon in the Dock, so the hero shows one. Two SVGs share
    the same <symbol> tiles: a viewBox can't be changed from CSS, and one dock
    scaled down to a phone puts 24pt icons on screen. */
-.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);margin:0;width:calc(100% - 24px);max-width:920px;z-index:60;pointer-events:none;
+.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);margin:0;width:calc(100% - 24px);max-width:min(920px,108vh);z-index:60;pointer-events:none;
   transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .35s ease}
 .dock.hide{transform:translateX(-50%) translateY(160px);opacity:0}
 .dock.hide .wide,.dock.hide .narrow{pointer-events:none}
@@ -360,6 +366,83 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
   transition:opacity .85s cubic-bezier(.22,.7,.3,1),transform .95s cubic-bezier(.22,.7,.3,1)}
 @media(prefers-reduced-motion:reduce){
   .js .big.rv,.js .big.rv.in{opacity:1;transform:none;transition:none}}
+
+/* ── section backdrops ────────────────────────────────── */
+/* Each one draws what its section is about, at a whisper, behind the content.
+   Side columns only appear where there is margin for them (≥1280px); motion
+   only runs while its section is on screen (.on) and never under reduced motion. */
+
+/* light scenes: a blueprint dot grid that fades out under the heading */
+.scene.lite{position:relative;isolation:isolate}
+.scene.lite::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(rgb(46 110 166 /.22) 1px,transparent 1.5px) calc(50% - 11px) 0/22px 22px;
+  -webkit-mask:radial-gradient(ellipse 62% 420px at 50% 0,#000 10%,transparent 100%);
+  mask:radial-gradient(ellipse 62% 420px at 50% 0,#000 10%,transparent 100%)}
+
+/* cursor spotlight: the grid lights up around the pointer (mouse only) */
+/* A fixed 480px square moved with transform, its background shifted back so its
+   lines land on the section's own grid. A full-height layer with a moving mask
+   would repaint all 5000px of #games on every mouse move. */
+.spot{position:absolute;left:0;top:0;width:480px;height:480px;z-index:-1;pointer-events:none;
+  opacity:0;transition:opacity .45s ease;will-change:transform;
+  background-image:linear-gradient(rgb(255 255 255 /.12) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(255 255 255 /.12) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask:radial-gradient(circle 230px at 50% 50%,#000,transparent 72%);
+  mask:radial-gradient(circle 230px at 50% 50%,#000,transparent 72%)}
+.spot.on{opacity:1}
+.hero .spot{z-index:0}
+
+/* shared: dim monospace columns in the side margins */
+.side{position:absolute;margin:0;pointer-events:none;white-space:pre;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.02em}
+.side.l{left:max(28px,calc(50% - 690px))}
+.side.r{right:max(28px,calc(50% - 690px))}
+@media(max-width:1279px){.side,.pk{display:none}}
+
+/* Graphics: the D3D12 objects a game creates, and the Metal objects D3DMetal
+   answers with — row for row — with calls crossing from one side to the other */
+.mbg{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  /* calls vanish under the copy and reappear on the far side: they pass *through* the diagram */
+  -webkit-mask:linear-gradient(90deg,#000 0,#000 22%,transparent 30%,transparent 70%,#000 78%);
+  mask:linear-gradient(90deg,#000 0,#000 22%,transparent 30%,transparent 70%,#000 78%)}
+.mbg .side{top:var(--top);line-height:var(--row);color:rgb(255 255 255 /.16)}
+.mbg{--top:clamp(150px,18vh,190px);--row:30px}
+.mbg .side b{font-weight:400;color:rgb(255 255 255 /.07);display:block}
+.mbg .l .h{color:rgb(111 168 220 /.5)}
+.mbg .r .h{color:rgb(224 164 88 /.55)}
+.mbg .r{text-align:right}
+.pk{position:absolute;left:0;top:calc(var(--top) + (var(--i) + 1) * var(--row) + 15px);
+  width:90px;height:1px;opacity:0;
+  background:linear-gradient(90deg,transparent,var(--cold) 45%,var(--warm) 80%,transparent)}
+.on .pk{animation:pk var(--t,5s) cubic-bezier(.45,0,.55,1) var(--d,0s) infinite}
+@keyframes pk{0%{transform:translateX(calc(max(28px,50vw - 690px) + 200px));opacity:0}
+  10%,88%{opacity:.9}
+  100%{transform:translateX(calc(100vw - max(28px,50vw - 690px) - 290px));opacity:0}}
+
+/* How it works: the folder that goes in and the bundle that comes out, lit
+   step by step as the build card above runs */
+.bbg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.bbg .side{top:clamp(160px,20vh,210px);line-height:2.1;color:rgb(17 17 19 /.26)}
+.bbg .cap{display:block;margin-bottom:6px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgb(17 17 19 /.3)}
+.bbg s{text-decoration:line-through;text-decoration-color:rgb(17 17 19 /.3);color:rgb(17 17 19 /.16)}
+.bbg [data-at]{transition:color .35s ease}
+.bbg [data-at].lit{color:var(--cold-d)}
+.bbg .tag{font-size:9.5px;padding:1px 6px;border-radius:4px;margin-left:8px;opacity:0;
+  background:rgb(46 110 166 /.12);color:var(--cold-d);transition:opacity .35s}
+.bbg .lit .tag,.bbg .lit+.tag{opacity:1}
+.bbg .done{color:rgb(0 140 105 /0);transition:color .4s}
+.bbg .done.lit{color:#00936F}
+
+/* Stores: a download, drawn as its chunks — see the canvas code. It lives in the
+   scene's bottom padding, under the copy rather than behind it. */
+.chunks{position:absolute;left:0;bottom:0;width:100%;height:calc(clamp(88px,13vh,150px) - 18px);
+  z-index:-1;pointer-events:none;
+  -webkit-mask:radial-gradient(ellipse 52% 130% at 50% 100%,#000 30%,transparent 80%);
+  mask:radial-gradient(ellipse 52% 130% at 50% 100%,#000 30%,transparent 80%)}
+
+@media(prefers-reduced-motion:reduce){.on .pk{animation:none}}
 
 /* ── stat / feature rows ──────────────────────────────── */
 .trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
@@ -778,6 +861,22 @@ codesign --verify RDR2.app
 </section>
 
 <section class="scene lite" id="build">
+  <!-- what goes in and what comes out; [data-at] lights at that build step -->
+  <div class="bbg" aria-hidden="true">
+<pre class="side l"><span class="cap">In · the game folder</span>Game/
+├─ <span data-at="0">Game.exe</span><span class="tag">x64</span>
+├─ <s>UnityCrashHandler64.exe</s>
+├─ <s>setup.exe</s>
+├─ <s>_CommonRedist/</s>
+└─ Game_Data/</pre>
+<pre class="side r"><span class="cap">Out · the bundle</span><span data-at="6">Your Game.app/</span> <span class="done" data-at="6">✓</span>
+└─ Contents/
+   ├─ <span data-at="4">Info.plist</span>
+   ├─ MacOS/
+   │  └─ <span data-at="4">launcher</span>
+   └─ Resources/
+      └─ <span data-at="4">AppIcon.icns</span></pre>
+  </div>
   <div class="col mid">
     <p class="kicker rv">The wrap</p>
     <h2 class="rv">Drop a folder.<br>Get an app.</h2>
@@ -800,6 +899,38 @@ codesign --verify RDR2.app
 </section>
 
 <section class="scene dark" id="metal">
+  <!-- the objects a D3D12 game creates, and what D3DMetal answers with -->
+  <div class="mbg" aria-hidden="true">
+<pre class="side l"><span class="h">Direct3D 12</span>
+ID3D12Device
+ID3D12CommandQueue
+ID3D12GraphicsCommandList
+ID3D12PipelineState
+ID3D12Resource
+ID3D12Fence
+IDXGISwapChain
+DrawIndexedInstanced()
+Dispatch()
+<b>DXIL</b></pre>
+<pre class="side r"><span class="h">Metal</span>
+MTLDevice
+MTLCommandQueue
+MTLCommandBuffer
+MTLRenderPipelineState
+MTLBuffer · MTLTexture
+MTLSharedEvent
+CAMetalLayer
+drawIndexedPrimitives
+dispatchThreadgroups
+<b>AIR</b></pre>
+    <i class="pk" style="--i:0;--t:5.2s"></i>
+    <i class="pk" style="--i:1;--t:6s;--d:1.1s"></i>
+    <i class="pk" style="--i:2;--t:4.6s;--d:2.3s"></i>
+    <i class="pk" style="--i:4;--t:5.6s;--d:.6s"></i>
+    <i class="pk" style="--i:6;--t:6.4s;--d:3.1s"></i>
+    <i class="pk" style="--i:7;--t:4.2s;--d:1.7s"></i>
+    <i class="pk" style="--i:8;--t:5s;--d:3.8s"></i>
+  </div>
   <div class="col mid">
     <p class="kicker rv">Graphics</p>
     <h2 class="rv">DirectX to Metal.<br>One hop.</h2>
@@ -828,6 +959,7 @@ codesign --verify RDR2.app
 </section>
 
 <section class="scene lite" id="stores">
+  <canvas class="chunks" id="chunks" aria-hidden="true"></canvas>
   <div class="col mid">
     <p class="kicker rv">Your library</p>
     <h2 class="rv">Steam. Epic. GOG.<br>Already there.</h2>
@@ -1097,9 +1229,15 @@ codesign --verify RDR2.app
   var bld = document.getElementById('bld');
   var steps = bld.querySelectorAll('.st');
   var fill = bld.querySelector('.bar i');
+  // the folder/bundle trees behind the card light up as each step is reached
+  var lights = document.querySelectorAll('#build .bbg [data-at]');
+  function light(n){
+    lights.forEach(function(el){ el.classList.toggle('lit', n >= +el.getAttribute('data-at')); });
+  }
   function finish(){
     steps.forEach(function(s){ s.classList.remove('run'); s.classList.add('done'); });
     fill.style.width = '100%'; bld.classList.add('fin');
+    light(steps.length);
   }
   if (reduce) { finish(); }
   else {
@@ -1109,14 +1247,91 @@ codesign --verify RDR2.app
       started = true; obs.disconnect();
       var i = 0;
       (function next(){
-        if(i >= steps.length){ fill.style.width='100%'; bld.classList.add('fin'); return; }
+        // the last step used to keep spinning: it was never marked done
+        if(i >= steps.length){ finish(); return; }
         if(i > 0) { steps[i-1].classList.remove('run'); steps[i-1].classList.add('done'); }
         steps[i].classList.add('run');
+        light(i);
         fill.style.width = Math.round((i/steps.length)*100) + '%';
         i++;
         setTimeout(next, 620);
       })();
     }, {threshold:.4}).observe(bld);
+  }
+
+  // ── Section backdrops ─────────────────────────────────────────────
+  // motion in a backdrop only runs while its section is on screen
+  var onIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){ e.target.classList.toggle('on', e.isIntersecting); });
+  });
+  document.querySelectorAll('#metal').forEach(function(s){ onIO.observe(s); });
+
+  // cursor spotlight on the dark scenes — mouse and trackpad only
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches){
+    document.querySelectorAll('.hero, .scene.dark, .scene.deep').forEach(function(sec){
+      var spot = document.createElement('div');
+      spot.className = 'spot';
+      spot.setAttribute('aria-hidden', 'true');
+      sec.insertBefore(spot, sec.firstChild);
+      var px = 0, py = 0, pending = false;
+      function place(){
+        pending = false;
+        var x = px - 240, y = py - 240;
+        spot.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+        // the section's grid has a line at width/2 − 32 + n·64 across and n·64 down
+        spot.style.backgroundPosition = (sec.clientWidth / 2 - 32 - x) + 'px ' + (-y) + 'px';
+      }
+      sec.addEventListener('pointermove', function(e){
+        var r = sec.getBoundingClientRect();
+        px = e.clientX - r.left; py = e.clientY - r.top;
+        if (!pending){ pending = true; requestAnimationFrame(place); }
+        spot.classList.add('on');
+      });
+      sec.addEventListener('pointerleave', function(){ spot.classList.remove('on'); });
+    });
+  }
+
+  // Stores: a download drawn as its chunks. Scrolling through the section is the
+  // download: chunks land out of order, the bottom rows first, and a lighter band
+  // runs just ahead — what the downloader has claimed but the disk does not have
+  // yet. The section's own copy is about exactly that gap.
+  var chunks = document.getElementById('chunks');
+  if (chunks && chunks.getContext){
+    var storesSec = document.getElementById('stores');
+    var cctx = chunks.getContext('2d');
+    var cells = [], cw = 0, ch = 0, cInView = false, cQueued = false;
+    var CELL = 9, GAP = 5;
+    function layoutChunks(){
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cw = chunks.clientWidth; ch = chunks.clientHeight;
+      chunks.width = Math.round(cw * dpr); chunks.height = Math.round(ch * dpr);
+      cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var step = CELL + GAP, cols = Math.ceil(cw / step), rows = Math.ceil(ch / step);
+      var x0 = (cw - (cols * step - GAP)) / 2, seed = 11;
+      function rnd(){ seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+      cells = [];
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++)
+        cells.push({x: x0 + c * step, y: ch - (r + 1) * step + GAP, t: .55 * rnd() + .45 * (r / rows)});
+    }
+    function drawChunks(){
+      cQueued = false;
+      // 0 as the strip enters at the bottom of the window, 1 by the time it is 55% up
+      var rect = chunks.getBoundingClientRect(), vh = window.innerHeight;
+      var p = Math.max(0, Math.min(1, (vh - rect.top) / (vh * .45 + rect.height)));
+      cctx.clearRect(0, 0, cw, ch);
+      for (var i = 0; i < cells.length; i++){
+        var k = cells[i];
+        cctx.fillStyle = k.t < p ? 'rgba(46,110,166,.42)'
+                       : k.t < p + .09 ? 'rgba(46,110,166,.16)'
+                       : 'rgba(17,17,19,.06)';
+        cctx.fillRect(k.x, k.y, CELL, CELL);
+      }
+    }
+    function queueChunks(){ if (cInView && !cQueued){ cQueued = true; requestAnimationFrame(drawChunks); } }
+    new IntersectionObserver(function(es){ cInView = es[0].isIntersecting; queueChunks(); }).observe(storesSec);
+    window.addEventListener('scroll', queueChunks, {passive: true});
+    window.addEventListener('resize', function(){ layoutChunks(); queueChunks(); });
+    layoutChunks();
   }
 
   // ── Auto-updating release download ────────────────────────────────
@@ -1292,7 +1507,7 @@ codesign --verify RDR2.app
       if (heroCta){
         // where the Dock sits when shown — measured from layout, not from its
         // rect, since .hide translates it off screen
-        var dockTop = window.innerHeight - 14 - dockEl.offsetHeight - 8;
+        var dockTop = window.innerHeight - 14 - dockEl.offsetHeight - 4;
         var ctaTop = heroCta.getBoundingClientRect().top;
         var ctaBottom = (heroSpec || heroCta).getBoundingClientRect().bottom;
         overCta = ctaBottom > dockTop && ctaTop < window.innerHeight;
