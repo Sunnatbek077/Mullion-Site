@@ -1119,7 +1119,7 @@ dispatchThreadgroups
         <thead><tr><th>Requirement</th><th>Why</th></tr></thead>
         <tbody>
           <tr><td>Apple Silicon</td><td>M1 or later</td></tr>
-          <tr><td>macOS 27</td><td>Minimum deployment target</td></tr>
+          <tr><td id="reqMacOS">macOS 27</td><td>Minimum deployment target</td></tr>
           <tr><td>Rosetta 2</td><td>Every published Wine / GPTK build is Intel-only</td></tr>
           <tr><td>~10 GB free</td><td>Engine, shared base prefix, per-game clones</td></tr>
           <tr><td>Game files</td><td>Owned on Steam, Epic, GOG, or already on disk</td></tr>
@@ -1336,12 +1336,44 @@ dispatchThreadgroups
 
   // ── Auto-updating release download ────────────────────────────────
   // Reads update.json from the mullion-runtime repo — the same file the
-  // Mullion client itself checks against, published by MullionAdmin's
-  // AppReleaseService whenever a build is published. Fetched fresh on
-  // every page load (public repo, no token needed), so a new release
-  // published from the admin app is live on this page on the very next
-  // visit — nothing on the site itself ever needs to be touched.
-  var UPDATE_JSON_URL = 'https://raw.githubusercontent.com/Sunnatbek077/mullion-runtime/main/update.json';
+  // Mullion client itself checks against, written by MullionAdmin's App
+  // Release screen when a build is published. Nothing on the site needs
+  // touching for a version bump.
+  //
+  // Read through the contents API, not raw.githubusercontent.com: raw is
+  // served from a CDN that holds the file for five minutes (max-age=300, and a
+  // cache-busting query string still hits the cached copy), so for five
+  // minutes after a publish the admin app and this page disagreed. The API
+  // answers from the repository itself. It allows 60 unauthenticated requests
+  // an hour per visitor, so raw stays as the fallback.
+  var UPDATE_API_URL = 'https://api.github.com/repos/Sunnatbek077/mullion-runtime/contents/update.json?ref=main';
+  var UPDATE_RAW_URL = 'https://raw.githubusercontent.com/Sunnatbek077/mullion-runtime/main/update.json';
+
+  function getJSON(url, headers){
+    return fetch(url, {cache: 'no-store', headers: headers || {}})
+      .then(function(r){ if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+  }
+
+  function fetchUpdateDoc(){
+    return getJSON(UPDATE_API_URL, {Accept: 'application/vnd.github.raw+json'})
+      .catch(function(){ return getJSON(UPDATE_RAW_URL); });
+  }
+
+  // Numeric, dot by dot — "0.10" is newer than "0.9". Same rule as the
+  // admin app's VersionOrder, so both sides agree on what "older" means.
+  function compareVersions(a, b){
+    var x = String(a).split('.'), y = String(b).split('.');
+    for (var i = 0; i < Math.max(x.length, y.length); i++){
+      var d = (parseInt(x[i], 10) || 0) - (parseInt(y[i], 10) || 0);
+      if (d) return d;
+    }
+    return 0;
+  }
+
+  // "27.0" → "27"; "26.5" stays "26.5"
+  function macOSLabel(v){
+    return String(v).replace(/(\.0)+$/, '');
+  }
 
   function fileNameFromURL(url){
     try { return decodeURIComponent(url.split('/').pop().split('?')[0]); }
@@ -1372,9 +1404,14 @@ dispatchThreadgroups
     var chip = document.getElementById('heroChip');
     if (chip) chip.textContent = 'v' + release.version + ' · public beta';
 
-    var specline = document.getElementById('heroSpecline');
-    if (specline && release.minimumSystemVersion){
-      specline.textContent = 'Apple Silicon · macOS ' + release.minimumSystemVersion + '+ · Rosetta 2 required';
+    // the bundle's LSMinimumSystemVersion, as the admin app read it — the
+    // hero line and the requirements table both follow it
+    if (release.minimumSystemVersion){
+      var os = macOSLabel(release.minimumSystemVersion);
+      var specline = document.getElementById('heroSpecline');
+      if (specline) specline.textContent = 'Apple Silicon · macOS ' + os + '+ · Rosetta 2 required';
+      var req = document.getElementById('reqMacOS');
+      if (req) req.textContent = 'macOS ' + os;
     }
 
     var kicker = document.getElementById('dlKicker');
@@ -1423,47 +1460,49 @@ dispatchThreadgroups
 
     var note = document.getElementById('dlNote');
     if (note){
-      note.textContent = 'This page checked for the latest release just now — it will pick up the next version the moment it is published, with nothing to change here.';
+      note.textContent = 'This page reads the release straight from the source on every visit — a version published from the admin app shows up here within a minute, with nothing to change on the site.';
     }
   }
 
-  function checkForLatestRelease(){
-    fetch(UPDATE_JSON_URL, {cache: 'no-store'})
-      .then(function(r){ if (!r.ok) throw new Error('update.json ' + r.status); return r.json(); })
-      .then(function(doc){ applyRelease(doc && doc.latest); })
-      .catch(function(){ /* stay in the "nothing published yet" state */ });
-  }
-
-  checkForLatestRelease();
-
   // ── Recent builds ─────────────────────────────────────────────────
-  // Every build MullionAdmin publishes is a zip on the one `app` release in
-  // mullion-releases, so the asset list is the version history. The GitHub
-  // API allows this unauthenticated (60 requests an hour per visitor); if it
-  // refuses, the list simply stays hidden.
+  // Every build MullionAdmin uploads is a zip on the one `app` release in
+  // mullion-releases, so the asset list is the version history — but it is
+  // not the list of *published* builds. The admin app uploads when a build is
+  // staged, before anyone presses Publish, and a withdrawn build's file stays
+  // up. So the list is cut to what update.json says: nothing newer than the
+  // live release, "Latest" on exactly that file, and no list at all while
+  // nothing is offered. Hidden if the API refuses.
   var RELEASES_URL = 'https://api.github.com/repos/Sunnatbek077/mullion-releases/releases/tags/app';
 
   function formatSize(bytes){
     return (bytes / 1e6).toFixed(1) + ' MB';
   }
 
-  function showBuilds(rel){
+  function showBuilds(rel, live){
     var builds = document.getElementById('builds');
     var tbody = document.getElementById('buildRows');
-    if (!builds || !tbody) return;
+    if (!builds || !tbody || !live || !live.version) return;
+    var liveFile = live.downloadURL ? fileNameFromURL(live.downloadURL) : null;
     var rows = (rel.assets || []).map(function(a){
-      var m = /^Mullion-([\d.]+)-(\d+)\.zip$/.exec(a.name);
-      return m && {version: m[1], url: a.browser_download_url, size: a.size, at: a.created_at};
-    }).filter(Boolean).sort(function(x, y){
-      return new Date(y.at) - new Date(x.at);
+      // the admin app names it Mullion-<version>.zip, or Mullion-<version>-<build>.zip
+      // when the build number says something the version doesn't
+      var m = /^Mullion-(\d+(?:\.\d+)*)(?:-([0-9A-Za-z.]+))?\.zip$/.exec(a.name);
+      return m && {version: m[1], build: m[2] || null, name: a.name,
+                   url: a.browser_download_url, size: a.size, at: a.updated_at || a.created_at};
+    }).filter(function(b){
+      return b && compareVersions(b.version, live.version) <= 0;
+    }).sort(function(x, y){
+      return compareVersions(y.version, x.version) || compareVersions(y.build || 0, x.build || 0);
     }).slice(0, 5);
     if (!rows.length) return;
 
-    rows.forEach(function(b, i){
+    rows.forEach(function(b){
       var tr = document.createElement('tr');
       var v = document.createElement('td');
-      v.textContent = b.version;
-      if (i === 0){
+      // two zips of one version (a rebuild) are told apart by build
+      var twin = rows.filter(function(o){ return o.version === b.version; }).length > 1;
+      v.textContent = b.version + (twin && b.build ? ' · build ' + b.build : '');
+      if (b.name === liveFile){
         var tag = document.createElement('span');
         tag.className = 'latest';
         tag.textContent = 'Latest';
@@ -1485,9 +1524,14 @@ dispatchThreadgroups
     builds.hidden = false;
   }
 
-  fetch(RELEASES_URL, {headers: {Accept: 'application/vnd.github+json'}})
-    .then(function(r){ if (!r.ok) throw new Error('releases ' + r.status); return r.json(); })
-    .then(showBuilds)
+  // update.json first: the page is useful the moment it lands, and the build
+  // list can't be drawn without knowing which build is live
+  var updateDoc = fetchUpdateDoc();
+  updateDoc
+    .then(function(doc){ applyRelease(doc && doc.latest); })
+    .catch(function(){ /* stay in the "nothing published yet" state */ });
+  Promise.all([updateDoc, getJSON(RELEASES_URL, {Accept: 'application/vnd.github+json'})])
+    .then(function(r){ showBuilds(r[1], r[0] && r[0].latest); })
     .catch(function(){ /* no history shown */ });
 
   // ── Dock hides once the "No Mac version. Playing anyway." (#games)
