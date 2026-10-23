@@ -622,6 +622,46 @@ footer .attr a{font-size:inherit;color:#7A7A82;text-decoration:underline}
 footer ul{list-style:none;display:flex;gap:20px;margin:0;padding:0;flex-wrap:wrap}
 footer a{font-size:12.5px;color:var(--w-2);text-decoration:none}
 footer a:hover{color:var(--w)}
+
+/* ── download dialog ──────────────────────────────────── */
+/* Opens when any download button is pressed: tells the reader about the one-time
+   Gatekeeper step before the file arrives, counts down 5 seconds, then starts the
+   download itself. The direct link stays on screen in case the browser blocks it. */
+.dlm{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
+  background:rgb(0 0 0 /.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s linear .25s}
+.dlm.open{opacity:1;visibility:visible;transition-delay:0s}
+.dlm-card{position:relative;width:min(520px,100%);max-height:calc(100dvh - 40px);overflow:auto;
+  background:var(--dark-2);color:var(--w);border:1px solid var(--line-d);border-radius:20px;
+  padding:clamp(24px,4vw,34px);box-shadow:0 40px 100px rgb(0 0 0 /.7);
+  transform:translateY(14px) scale(.98);transition:transform .3s cubic-bezier(.22,.7,.3,1)}
+.dlm.open .dlm-card{transform:none}
+.dlm-x{position:absolute;top:12px;right:12px;width:34px;height:34px;padding:0;border:0;border-radius:50%;
+  background:transparent;color:var(--w-3);cursor:pointer;font-size:22px;line-height:1}
+.dlm-x:hover{background:rgb(255 255 255 /.08);color:var(--w)}
+.dlm-kick{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cold);margin:0 0 10px}
+.dlm-card h3{font-size:clamp(21px,3vw,25px);font-weight:700;letter-spacing:-.03em;line-height:1.15;margin:0 0 6px}
+.dlm-count{font-size:15.5px;color:var(--w-2);margin:0 0 12px;max-width:none}
+.dlm-count b{color:var(--w);font-weight:600}
+.dlm-bar{height:3px;border-radius:3px;background:var(--line-d);overflow:hidden;margin:0 0 22px}
+.dlm-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cold),var(--warm))}
+.dlm.run .dlm-bar i{width:100%;transition:width 5s linear}
+.dlm-note{border:1px solid var(--line-d);border-radius:14px;padding:16px 18px;background:rgb(255 255 255 /.03)}
+.dlm-note h4{font-size:14px;font-weight:600;color:var(--w);margin:0 0 8px;letter-spacing:-.01em}
+.dlm-note p{font-size:14.5px;line-height:1.55;color:var(--w-2);margin:0 0 10px;max-width:none}
+.dlm-note ol{margin:0;padding:0 0 0 20px;font-size:14.5px;line-height:1.6;color:var(--w-2)}
+.dlm-note li{padding:2px 0}
+.dlm-note li::marker{color:var(--w-3)}
+.dlm-note strong{color:var(--w)}
+.dlm-fb{font-size:13.5px;line-height:1.55;color:var(--w-3);margin:18px 0 0;max-width:none}
+.dlm-fb a{color:var(--cold);word-break:break-all}
+.dlm-act{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:22px}
+.dlm-act .btn{cursor:pointer;font-family:inherit;padding:11px 22px;font-size:14.5px}
+.dlm-act .btn-q{background:transparent;color:var(--w-2);border-color:var(--line-d)}
+.dlm-act .btn-q:hover{color:var(--w);border-color:#3A3A42}
+body.dlm-lock{overflow:hidden}
+@media(prefers-reduced-motion:reduce){.dlm,.dlm-card{transition:none}.dlm.run .dlm-bar i{transition:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1188,6 +1228,139 @@ dispatchThreadgroups
     <p class="attr">MacBook photographs: <a href="https://commons.wikimedia.org/wiki/File:Macbook_Air_M1_Silver_PNG.png">MacBook Air by L</a> and <a href="https://commons.wikimedia.org/wiki/File:MacBook_Neo_(256GB_Citrus;_2026;_Low_angle;_no_background).png">MacBook Neo by RickyCourtney</a>, via Wikimedia Commons, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Both cropped and resized.</p>
   </div>
 </footer>
+
+<div class="dlm" id="dlm" aria-hidden="true">
+  <div class="dlm-card" role="dialog" aria-modal="true" aria-labelledby="dlmTitle" aria-describedby="dlmCount">
+    <button class="dlm-x" type="button" aria-label="Close" data-dlm-close>&times;</button>
+    <p class="dlm-kick" id="dlmKick">Mullion for Mac</p>
+    <h3 id="dlmTitle">Your download is about to start</h3>
+    <p class="dlm-count" id="dlmCount" role="status" aria-live="polite"></p>
+    <div class="dlm-bar" aria-hidden="true"><i></i></div>
+
+    <div class="dlm-note">
+      <h4>Before you open it: one quick step</h4>
+      <p>Mullion is signed ad-hoc and is not notarized by Apple, so macOS will say it can&rsquo;t verify the app the first time you open it. That&rsquo;s expected &mdash; here is how to let it through:</p>
+      <ol>
+        <li>Open <strong>Mullion.app</strong> once. macOS will block it &mdash; click <strong>Done</strong>.</li>
+        <li>Go to <strong>System Settings &rarr; Privacy &amp; Security</strong>.</li>
+        <li>Scroll to the <strong>Security</strong> section and click <strong>Open Anyway</strong>.</li>
+      </ol>
+      <p style="margin:10px 0 0">You only have to do this once.</p>
+    </div>
+
+    <p class="dlm-fb">Download didn&rsquo;t start? Use this direct link instead:<br><a id="dlmLink" href="#" rel="noopener"></a></p>
+
+    <div class="dlm-act">
+      <button class="btn btn-q" type="button" data-dlm-close>Cancel</button>
+      <button class="btn btn-p" type="button" id="dlmNow">Download now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var modal = document.getElementById('dlm');
+  if (!modal) return;
+  var countEl = document.getElementById('dlmCount');
+  var linkEl = document.getElementById('dlmLink');
+  var nowBtn = document.getElementById('dlmNow');
+  var WAIT = 5;
+  var timer = null, left = WAIT, url = '', name = '', lastFocus = null, started = false;
+
+  // every real download control on the page: the hero button, the one in the
+  // Download section, and the links in the recent-builds table. A disabled button
+  // ("No build published yet") is skipped, so it still does nothing.
+  function matchTrigger(el){
+    var a = el && el.closest ? el.closest('a[download], #buildRows a') : null;
+    if (!a || a.getAttribute('aria-disabled') === 'true') return null;
+    var href = a.getAttribute('href') || '';
+    return /^https?:/i.test(href) ? a : null;
+  }
+
+  function setCount(){
+    countEl.textContent = '';
+    if (started){ countEl.textContent = 'Download started — check your Downloads folder.'; return; }
+    countEl.appendChild(document.createTextNode('Your download will start in '));
+    var b = document.createElement('b');
+    b.textContent = left + (left === 1 ? ' second' : ' seconds');
+    countEl.appendChild(b);
+    countEl.appendChild(document.createTextNode('…'));
+  }
+
+  function startDownload(){
+    if (started || !url) return;
+    started = true;
+    clearInterval(timer); timer = null;
+    var a = document.createElement('a');
+    a.href = url;
+    if (name) a.setAttribute('download', name);
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setCount();
+  }
+
+  function openModal(trigger){
+    url = trigger.href;
+    name = trigger.getAttribute('download') || '';
+    started = false; left = WAIT;
+    lastFocus = document.activeElement;
+    linkEl.href = url;
+    linkEl.textContent = url;
+    setCount();
+    modal.classList.remove('run');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('dlm-lock');
+    // restart the bar's 5s transition from empty
+    void modal.offsetWidth;
+    modal.classList.add('run');
+    clearInterval(timer);
+    timer = setInterval(function(){
+      left--;
+      if (left <= 0){ startDownload(); } else { setCount(); }
+    }, 1000);
+    nowBtn.focus();
+  }
+
+  function closeModal(){
+    clearInterval(timer); timer = null;
+    modal.classList.remove('open', 'run');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('dlm-lock');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.addEventListener('click', function(e){
+    var t = matchTrigger(e.target);
+    if (t && !modal.classList.contains('open')){
+      // let ctrl/cmd/middle-click behave normally
+      if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      openModal(t);
+      return;
+    }
+    if (e.target.closest && e.target.closest('[data-dlm-close]')) closeModal();
+    else if (e.target === modal) closeModal();
+  });
+
+  nowBtn.addEventListener('click', startDownload);
+
+  document.addEventListener('keydown', function(e){
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape'){ closeModal(); return; }
+    if (e.key !== 'Tab') return;
+    // keep focus inside the dialog
+    var f = modal.querySelectorAll('button, a[href]');
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+})();
+</script>
 
 <script type="module" src="js/macbook.js?v=8"></script>
 
