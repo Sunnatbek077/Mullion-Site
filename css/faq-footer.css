@@ -25,6 +25,9 @@
   display:grid;grid-template-columns:repeat(auto-fit,minmax(266px,1fr));gap:30px}
 .fn div{font-size:13.5px;line-height:1.55;color:var(--w-3);max-width:44ch}
 .fn h4{font-size:13.5px;font-weight:600;color:var(--w-2);margin:0 0 7px}
+.fn-more{margin:26px 0 0;max-width:none;text-align:left}
+.fn-more a{color:var(--cold);font-size:15.5px;font-weight:600;text-decoration:none}
+.fn-more a:hover{text-decoration:underline}
 .fn code{font-size:12.5px}
 footer{background:var(--black);border-top:1px solid var(--line-d);padding:38px 0 54px}
 footer .col{display:flex;gap:26px;justify-content:space-between;flex-wrap:wrap}
