@@ -752,6 +752,7 @@ body.dlm-lock{overflow:hidden}
       <li><a href="#compare">Compare</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#pricing">Pricing</a></li>
+      <li><a href="whats-new.html">Changelog</a></li>
       <li class="dl"><a href="#specs">Download</a></li>
     </ul>
     <button class="mt" type="button" aria-controls="navlinks" aria-expanded="false" aria-label="Menu"><span></span><span></span></button>
@@ -1263,7 +1264,7 @@ dispatchThreadgroups
     <ul>
       <li><a href="#build">How it works</a></li><li><a href="#compare">Compare</a></li>
       <li><a href="#faq">FAQ</a></li><li><a href="#specs">Download</a></li>
-      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#pricing">Pricing</a></li><li><a href="whats-new.html">Changelog</a></li>
       <li><a href="https://github.com/Sunnatbek077/mullion-releases/issues" target="_blank" rel="noopener noreferrer">Support</a></li>
     </ul>
     <p class="attr">MacBook photographs: <a href="https://commons.wikimedia.org/wiki/File:Macbook_Air_M1_Silver_PNG.png">MacBook Air by L</a> and <a href="https://commons.wikimedia.org/wiki/File:MacBook_Neo_(256GB_Citrus;_2026;_Low_angle;_no_background).png">MacBook Neo by RickyCourtney</a>, via Wikimedia Commons, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Both cropped and resized.</p>
@@ -1657,19 +1658,15 @@ dispatchThreadgroups
       a.setAttribute('download', fileName);
       a.textContent = 'Download ' + fileName;
       wrap.appendChild(a);
-      if (release.notes){
-        // notes are whatever MullionAdmin published; line breaks are kept
-        var box = document.createElement('div');
-        box.className = 'whatsnew';
-        var h = document.createElement('p');
-        h.className = 'wn-h';
-        h.textContent = 'What’s new in ' + release.version;
-        var p = document.createElement('p');
-        p.className = 'wn-b';
-        p.textContent = release.notes;
-        box.appendChild(h); box.appendChild(p);
-        wrap.appendChild(box);
-      }
+      // the notes live on their own page, together with the version history
+      var wn = document.createElement('a');
+      wn.href = 'whats-new.html';
+      wn.target = '_blank';
+      wn.rel = 'noopener';
+      wn.className = 'btn btn-s';
+      wn.style.marginTop = '14px';
+      wn.textContent = 'What’s new in ' + release.version + ' ›';
+      wrap.appendChild(wn);
     }
 
     var note = document.getElementById('dlNote');

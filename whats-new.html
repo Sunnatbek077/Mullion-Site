@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What’s new — Mullion</title>
+<meta name="description" content="Release notes and version history for Mullion, the Mac app that runs Windows games.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --black:#000; --dark-2:#141416;
+  --w:#F5F5F7; --w-2:#A1A1A6; --w-3:#6E6E73;
+  --cold:#6FA8DC; --line-d:#26262A;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--black);color:var(--w);
+  font-family:"Schibsted Grotesk",-apple-system,system-ui,sans-serif;
+  font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--cold);outline-offset:4px}
+a{color:var(--cold);text-decoration:none}
+a:hover{text-decoration:underline}
+.bar{border-bottom:1px solid var(--line-d);background:rgb(11 11 13 /.9)}
+.bar .in{width:min(760px,100% - 40px);margin:0 auto;display:flex;align-items:center;
+  justify-content:space-between;height:56px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--w);font-weight:600;letter-spacing:-.01em}
+.brand img{width:22px;height:22px;border-radius:5px}
+.brand:hover{text-decoration:none}
+.bar .back{font-size:14.5px}
+main{width:min(760px,100% - 40px);margin:0 auto;padding:clamp(48px,9vh,96px) 0 96px}
+.kick{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cold);margin:0 0 12px}
+h1{font-size:clamp(34px,6vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.05;margin:0 0 12px}
+.lede{color:var(--w-2);margin:0 0 44px;font-size:17px}
+.list{list-style:none;margin:0;padding:0}
+.item{display:grid;grid-template-columns:170px 1fr;gap:8px 32px;padding:28px 0;border-top:1px solid var(--line-d)}
+.meta{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ver{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.date{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.05em;color:var(--w-3)}
+.latest{padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--cold);background:rgb(111 168 220 /.13)}
+.notes{margin:0;color:var(--w-2);font-size:16px;line-height:1.65;white-space:pre-line}
+.notes.none{color:var(--w-3);font-style:italic}
+.dl{display:inline-block;margin-top:14px;font-size:14.5px;font-weight:500}
+.state{color:var(--w-3);padding:28px 0;border-top:1px solid var(--line-d)}
+@media(max-width:620px){.item{grid-template-columns:1fr;gap:10px}.meta{flex-direction:row;align-items:center;flex-wrap:wrap;gap:12px}}
+</style>
+
+<header class="bar"><div class="in">
+  <a class="brand" href="./"><img src="img/favicon.svg" alt="">Mullion</a>
+  <a class="back" href="./#specs">‹ Download</a>
+</div></header>
+
+<main>
+  <p class="kick">Mullion for Mac</p>
+  <h1>What’s new</h1>
+  <p class="lede">Every published version of Mullion, newest first.</p>
+  <ol class="list" id="list"><li class="state" id="state">Loading…</li></ol>
+</main>
+
+<script>
+(function(){
+  var UPDATE_API_URL = 'https://api.github.com/repos/Sunnatbek077/mullion-runtime/contents/update.json?ref=main';
+  var UPDATE_RAW_URL = 'https://raw.githubusercontent.com/Sunnatbek077/mullion-runtime/main/update.json';
+  var list = document.getElementById('list');
+
+  function getJSON(url, headers){
+    return fetch(url, {cache:'no-store', headers: headers || {}})
+      .then(function(r){ if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
+  }
+  function fetchUpdateDoc(){
+    return getJSON(UPDATE_API_URL, {Accept:'application/vnd.github.raw+json'})
+      .catch(function(){ return getJSON(UPDATE_RAW_URL); });
+  }
+  // same rule as the main page and the admin app's VersionOrder
+  function compareVersions(a, b){
+    var x = String(a).split('.'), y = String(b).split('.');
+    for (var i = 0; i < Math.max(x.length, y.length); i++){
+      var d = (parseInt(x[i], 10) || 0) - (parseInt(y[i], 10) || 0);
+      if (d) return d;
+    }
+    return 0;
+  }
+  function formatDate(iso){
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'});
+  }
+  function entries(doc){
+    var all = [];
+    if (doc && Array.isArray(doc.history)) all = all.concat(doc.history);
+    if (doc && doc.latest) all.push(doc.latest);
+    var seen = {};
+    return all.filter(function(r){
+      if (!r || !r.version) return false;
+      var k = r.version + '|' + (r.build || '');
+      if (seen[k]) return false;
+      seen[k] = true;
+      return true;
+    }).sort(function(x, y){
+      return compareVersions(y.version, x.version) || compareVersions(y.build || 0, x.build || 0);
+    });
+  }
+  function show(msg){
+    list.textContent = '';
+    var li = document.createElement('li');
+    li.className = 'state';
+    li.textContent = msg;
+    list.appendChild(li);
+  }
+
+  fetchUpdateDoc().then(function(doc){
+    var rows = entries(doc);
+    if (!rows.length){ show('No version has been published yet.'); return; }
+    var liveV = doc.latest && doc.latest.version, liveB = doc.latest && doc.latest.build;
+    list.textContent = '';
+    rows.forEach(function(r){
+      var li = document.createElement('li'); li.className = 'item';
+      var meta = document.createElement('div'); meta.className = 'meta';
+      var v = document.createElement('span'); v.className = 'ver'; v.textContent = r.version;
+      meta.appendChild(v);
+      if (r.version === liveV && (r.build || '') === (liveB || '')){
+        var t = document.createElement('span'); t.className = 'latest'; t.textContent = 'Latest';
+        meta.appendChild(t);
+      }
+      var when = r.publishedAt ? formatDate(r.publishedAt) : null;
+      if (when){ var d = document.createElement('span'); d.className = 'date'; d.textContent = when; meta.appendChild(d); }
+      var body = document.createElement('div');
+      var n = document.createElement('p'); n.className = 'notes';
+      var text = r.notes && String(r.notes).trim();
+      if (text) n.textContent = text; else { n.className += ' none'; n.textContent = 'No release notes were published for this version.'; }
+      body.appendChild(n);
+      li.appendChild(meta); li.appendChild(body);
+      list.appendChild(li);
+    });
+  }).catch(function(){ show('Couldn’t load the version history. Try again in a minute.'); });
+})();
+</script>
