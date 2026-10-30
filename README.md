@@ -53,8 +53,11 @@ same value, declare it in both (`reduce` is, in `page.js` and `build-sequence.js
 ```
 index.html            markup + the inline SVG sprite and Dock art
 whats-new.html        Changelog page: reads update.json, lists every version
+credits.html          Credits and privacy: projects Mullion is built on, what it sends
 css/
   base.css            tokens (:root), page defaults, scenes, the shared column
+  subpage.css         shared by whats-new.html and credits.html (tokens, top bar, header)
+  credits.css         credits.html only
   nav.css             top bar, Features dropdown, Download pill, phone menu
   hero.css            hero, its grid backdrop, the Dock, scroll-reveal helper
   how-it-works.css    build-animation card, DirectX → Metal path diagram
@@ -219,7 +222,9 @@ not the one after. Its outbound-request sentence is worded to match the Privacy 
 the bottom of the page verbatim; change one and change both.
 
 Prototype — the download button is deliberately disabled and the `#` links have no
-destination yet. Nothing on the page claims anything that hasn't been checked; see
-the comparison table's two rows that go against us.
+destination yet. Nothing on the page claims anything that hasn't been checked.
+
+The competitor comparison table (`#compare`) was removed on purpose. If it comes back, put
+the two rows that go against Mullion back with it — it only worked as long as it was honest.
 
 Kept outside the app repo on purpose: the website is not part of the product.

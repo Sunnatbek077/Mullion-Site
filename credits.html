@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credits and Privacy — Mullion</title>
+<meta name="description" content="The open-source projects Mullion is built on, what ships inside the app, and exactly what it sends over the network.">
+<link rel="canonical" href="https://mullion-runtime.vercel.app/credits.html">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/subpage.css">
+<link rel="stylesheet" href="css/credits.css">
+</head>
+<body>
+
+<header class="bar wide-bar"><div class="in">
+  <a class="brand" href="./"><img src="img/favicon.svg" alt="">Mullion</a>
+  <a class="back" href="./">‹ Back to Mullion</a>
+</div></header>
+
+<main class="wide">
+  <p class="kick">Mullion for Mac</p>
+  <h1>Credits and privacy</h1>
+  <p class="lede">Who built the parts Mullion stands on, and exactly what the app does with your data.</p>
+
+  <section class="sec" id="credits" aria-labelledby="h-credits">
+    <h2 id="h-credits">Built on other people’s work</h2>
+    <p class="sub">Mullion is the Mac app around the engine: it sets up the environment and launches your games. The engine itself — the part that actually runs Windows games — is the work of the projects below.</p>
+
+    <ol class="chain">
+      <li class="node">
+        <p class="who">Wine</p>
+        <p class="what">The foundation</p>
+        <p>Thirty years of reimplementing the Windows API, by hundreds of contributors.</p>
+        <p style="margin-top:12px"><span class="pill">LGPL-2.1-or-later</span></p>
+      </li>
+      <li class="arr" aria-hidden="true">→</li>
+      <li class="node">
+        <p class="who">CodeWeavers</p>
+        <p class="what">CrossOver</p>
+        <p>The largest contributor to Wine, and the authors of the macOS work that made this practical. <b style="color:var(--w)">The engine Mullion runs is theirs.</b></p>
+      </li>
+      <li class="arr" aria-hidden="true">→</li>
+      <li class="node">
+        <p class="who">Apple</p>
+        <p class="what">Game Porting Toolkit · D3DMetal</p>
+        <p>The DirectX-to-Metal translation, itself built on Wine and CodeWeavers’ work.</p>
+      </li>
+    </ol>
+    <p class="chain-note"><b>One lineage, not three.</b> Each step stands on the one before it.</p>
+
+    <h3>Shipped inside Mullion</h3>
+    <div class="cards">
+      <div class="card">
+        <p class="who">winetricks</p>
+        <p class="by">Dan Kegel, Austin English and contributors.</p>
+        <span class="pill">LGPL-2.1-or-later</span>
+      </div>
+      <div class="card">
+        <p class="who">cabextract</p>
+        <p class="by">Stuart Caie.</p>
+        <span class="pill">GPL</span>
+      </div>
+    </div>
+
+    <h3>Fetched when you connect a store</h3>
+    <div class="cards">
+      <div class="card">
+        <p class="who">DepotDownloader</p>
+        <p class="by">SteamRE.</p>
+        <span class="pill warm">Steam</span>
+      </div>
+      <div class="card">
+        <p class="who">Legendary</p>
+        <p class="by">Heroic Games Launcher.</p>
+        <span class="pill warm">Epic Games</span>
+      </div>
+      <div class="card">
+        <p class="who">gogdl</p>
+        <p class="by">Heroic Games Launcher.</p>
+        <span class="pill warm">GOG</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="privacy" aria-labelledby="h-privacy">
+    <h2 id="h-privacy">Privacy</h2>
+    <p class="sub">The short version: Mullion itself uploads nothing. The longer version is below, including the one place your sign-in details do leave your Mac — when you sign in to a store.</p>
+
+    <div class="facts">
+      <div class="fact">
+        <div class="ic" aria-hidden="true">⌀</div>
+        <h4>Nothing is uploaded</h4>
+        <p>Mullion uploads nothing — not your library, not your game names, not a usage ping.</p>
+      </div>
+      <div class="fact">
+        <div class="ic" aria-hidden="true">↗</div>
+        <h4>One request that isn’t a download</h4>
+        <p>The app makes exactly one outbound request that is not a download: a <code>HEAD</code> to read a component's size.</p>
+        <p class="plain">A <code>HEAD</code> request asks a server how big a file is without fetching the file itself.</p>
+      </div>
+      <div class="fact warn">
+        <div class="ic" aria-hidden="true">!</div>
+        <h4>The store tools are a different matter</h4>
+        <p>The store tools it runs are a different matter: Steam, Epic and GOG each receive your credentials, because signing in to a store means signing in to that store.</p>
+        <p class="plain">That is between you and the store — the same as signing in on its own website.</p>
+      </div>
+      <div class="fact">
+        <div class="ic" aria-hidden="true">⌂</div>
+        <h4>Everything stays on your Mac</h4>
+        <p>Everything Mullion writes stays in <code>~/Mullion</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Mullion is built by an independent developer and is not affiliated with Apple, Valve, Epic Games, GOG, Microsoft or CodeWeavers. Every trademark belongs to its owner.</p>
+</main>
+
+</body>
+</html>
