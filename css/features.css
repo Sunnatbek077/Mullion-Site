@@ -1,0 +1,88 @@
+/* Stat / feature rows and the entry-level note (MacBook comparison) */
+/* ── stat / feature rows ──────────────────────────────── */
+.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:clamp(28px,4vw,54px);margin-top:56px;text-align:left}
+.trio p{font-size:15.5px;margin:0;color:var(--w-3)}
+.lite .trio p{color:var(--k-3)}
+.trio .n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cold);display:block;margin-bottom:11px}
+.lite .trio .n{color:var(--cold-d)}
+
+/* ── entry-level note ─────────────────────────────────── */
+.entry{margin-top:clamp(48px,6vw,74px);text-align:left;
+  border:1px solid var(--line-d);border-radius:20px;padding:clamp(28px,3.6vw,46px)}
+.lite .entry{border-color:var(--line-l)}
+.ekick{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--cold);margin:0 0 14px}
+.lite .ekick{color:var(--cold-d)}
+.entry p{margin-left:0;margin-right:0}   /* .mid p{margin:auto} would centre these */
+.entry h3{font-size:clamp(23px,2.8vw,34px);letter-spacing:-.03em;line-height:1.08;
+  margin:0 0 14px;max-width:20ch}
+.entry .lead{font-size:16.5px;margin:0;max-width:72ch;color:var(--w-2)}
+.lite .entry .lead{color:var(--k-2)}
+
+/* Both machines drawn in profile rather than photographed: the side is where the
+   claim lives — no vent on either one, so the shell is the whole cooling system.
+   Every id inside is suffixed, since two copies of this sit in one document. */
+.rigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:clamp(16px,2.2vw,26px);margin-top:clamp(26px,3.2vw,38px)}
+.rig{position:relative;display:grid;grid-template-rows:clamp(150px,17vw,196px) auto;margin:0;
+  border:1px solid var(--line-d);border-radius:14px;background:var(--dark-2);
+  padding:6px 18px 16px;overflow:hidden}
+.rig::before{content:"";position:absolute;left:50%;top:34%;width:78%;aspect-ratio:1.7;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgb(111 168 220 /.13),transparent)}
+.lite .rig{border-color:var(--line-l);background:#fff}
+/* the two shots are cut-outs of different crops, so a fixed box plus contain is
+   what makes them read as one set rather than two pasted pictures */
+.rig img{position:relative;display:block;width:100%;height:100%;object-fit:contain;
+  object-position:center bottom;margin:8px 0 14px}
+.rig.wide img{padding-bottom:14px}
+.rig figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.rig figcaption b{font-weight:600;font-size:15px;letter-spacing:-.015em;color:var(--w)}
+.lite .rig figcaption b{color:var(--k)}
+.rig figcaption span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--w-3)}
+.lite .rig figcaption span{color:var(--k-3)}
+
+/* the cooling claim is a measurement, so it is drawn as one */
+.therm{margin-top:clamp(28px,3.4vw,40px);padding-top:clamp(24px,3vw,32px);
+  border-top:1px solid var(--line-d)}
+.lite .therm{border-top-color:var(--line-l)}
+.tlbl{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;
+  align-items:baseline;margin-bottom:20px}
+.tlbl .n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--warm)}
+.lite .tlbl .n{color:var(--warm-d)}
+.tlbl .src{font-size:12.5px;color:var(--w-3)}
+.lite .tlbl .src{color:var(--k-3)}
+.trow{display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;
+  gap:16px;margin-top:12px}
+.trow .tk{font-size:13.5px;color:var(--w-2)}
+.lite .trow .tk{color:var(--k-2)}
+.tb{height:9px;border-radius:99px;background:#1E1E22;overflow:hidden}
+.lite .tb{background:var(--light-2)}
+/* --fill, never --w: :root already owns --w as the primary text colour.
+   Filled by default and emptied only under .js, the same shape .rv uses — with
+   the fill keyed to .in alone, a reader without JS gets two blank tracks. */
+.tb i{display:block;height:100%;width:var(--fill);border-radius:inherit;background:var(--cold)}
+.js .tb i{width:0;transition:width 1.05s cubic-bezier(.22,.7,.3,1) .2s}
+.js .entry.in .tb i{width:var(--fill)}
+.tb.hot i{background:var(--warm)}
+.tv{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--w);white-space:nowrap}
+.lite .tv{color:var(--k)}
+.tv em{font-style:normal;color:var(--w-3);margin-left:9px}
+.lite .tv em{color:var(--k-3)}
+.tcap{font-size:15px;line-height:1.5;margin:24px 0 0;max-width:none;color:var(--w-3)}
+.tsrc{font-size:12.5px;line-height:1.55;margin:12px 0 0;max-width:none;color:#5A5A60}
+.lite .tsrc{color:#9A9AA2}
+.tsrc a{color:#7A7A82;text-decoration:underline;text-underline-offset:2px}
+.tsrc a:hover{color:var(--w)}
+.lite .tsrc a{color:#7A7A82}.lite .tsrc a:hover{color:var(--k)}
+.lite .tcap{color:var(--k-3)}
+@media(max-width:720px){
+  .trow{grid-template-columns:1fr;gap:7px;margin-top:18px}
+  .trow .tv{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){.js .tb i{transition:none}}
+

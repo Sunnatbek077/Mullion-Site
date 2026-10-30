@@ -1,0 +1,40 @@
+/* The “your download is starting” dialog */
+/* ── download dialog ──────────────────────────────────── */
+/* Opens when any download button is pressed: tells the reader about the one-time
+   Gatekeeper step before the file arrives, counts down 5 seconds, then starts the
+   download itself. The direct link stays on screen in case the browser blocks it. */
+.dlm{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
+  background:rgb(0 0 0 /.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s linear .25s}
+.dlm.open{opacity:1;visibility:visible;transition-delay:0s}
+.dlm-card{position:relative;width:min(520px,100%);max-height:calc(100dvh - 40px);overflow:auto;
+  background:var(--dark-2);color:var(--w);border:1px solid var(--line-d);border-radius:20px;
+  padding:clamp(24px,4vw,34px);box-shadow:0 40px 100px rgb(0 0 0 /.7);
+  transform:translateY(14px) scale(.98);transition:transform .3s cubic-bezier(.22,.7,.3,1)}
+.dlm.open .dlm-card{transform:none}
+.dlm-x{position:absolute;top:12px;right:12px;width:34px;height:34px;padding:0;border:0;border-radius:50%;
+  background:transparent;color:var(--w-3);cursor:pointer;font-size:22px;line-height:1}
+.dlm-x:hover{background:rgb(255 255 255 /.08);color:var(--w)}
+.dlm-kick{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cold);margin:0 0 10px}
+.dlm-card h3{font-size:clamp(21px,3vw,25px);font-weight:700;letter-spacing:-.03em;line-height:1.15;margin:0 0 6px}
+.dlm-count{font-size:15.5px;color:var(--w-2);margin:0 0 12px;max-width:none}
+.dlm-count b{color:var(--w);font-weight:600}
+.dlm-bar{height:3px;border-radius:3px;background:var(--line-d);overflow:hidden;margin:0 0 22px}
+.dlm-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cold),var(--warm))}
+.dlm.run .dlm-bar i{width:100%;transition:width 5s linear}
+.dlm-note{border:1px solid var(--line-d);border-radius:14px;padding:16px 18px;background:rgb(255 255 255 /.03)}
+.dlm-note h4{font-size:14px;font-weight:600;color:var(--w);margin:0 0 8px;letter-spacing:-.01em}
+.dlm-note p{font-size:14.5px;line-height:1.55;color:var(--w-2);margin:0 0 10px;max-width:none}
+.dlm-note ol{margin:0;padding:0 0 0 20px;font-size:14.5px;line-height:1.6;color:var(--w-2)}
+.dlm-note li{padding:2px 0}
+.dlm-note li::marker{color:var(--w-3)}
+.dlm-note strong{color:var(--w)}
+.dlm-fb{font-size:13.5px;line-height:1.55;color:var(--w-3);margin:18px 0 0;max-width:none}
+.dlm-fb a{color:var(--cold);word-break:break-all}
+.dlm-act{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:22px}
+.dlm-act .btn{cursor:pointer;font-family:inherit;padding:11px 22px;font-size:14.5px}
+.dlm-act .btn-q{background:transparent;color:var(--w-2);border-color:var(--line-d)}
+.dlm-act .btn-q:hover{color:var(--w);border-color:#3A3A42}
+body.dlm-lock{overflow:hidden}
+@media(prefers-reduced-motion:reduce){.dlm,.dlm-card{transition:none}.dlm.run .dlm-bar i{transition:none}}

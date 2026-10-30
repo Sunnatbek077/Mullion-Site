@@ -1,0 +1,37 @@
+/* FAQ accordion and footnotes */
+/* ── faq ──────────────────────────────────────────────── */
+/* <details>, not a scripted accordion: it opens without JS, find-in-page
+   reaches a closed answer, and a screen reader already knows what it is */
+.faq{max-width:760px;margin:46px auto 0;text-align:left;border-top:1px solid var(--line-l)}
+.faq details{border-bottom:1px solid var(--line-l)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;gap:22px;padding:21px 0;font-size:clamp(17px,1.7vw,19px);font-weight:600;
+  letter-spacing:-.018em;line-height:1.35;color:var(--k)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:9px;height:9px;margin:-4px 4px 0 0;
+  border-right:1.6px solid var(--k-3);border-bottom:1.6px solid var(--k-3);
+  transform:rotate(45deg);transition:transform .25s ease,margin .25s ease}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:5px}
+.faq summary:hover{color:var(--cold-d)}
+.faq .a{padding:0 40px 24px 0}
+.faq .a p{margin:0 0 12px;font-size:16.5px;max-width:none}
+.faq .a p:last-child{margin-bottom:0}
+.faq a{color:var(--cold-d)}
+@media(max-width:600px){.faq .a{padding-right:0}}
+@media(prefers-reduced-motion:reduce){.faq summary::after{transition:none}}
+
+/* ── footnotes ────────────────────────────────────────── */
+.fn{border-top:1px solid var(--line-d);padding-top:34px;margin-top:64px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(266px,1fr));gap:30px}
+.fn div{font-size:13.5px;line-height:1.55;color:var(--w-3);max-width:44ch}
+.fn h4{font-size:13.5px;font-weight:600;color:var(--w-2);margin:0 0 7px}
+.fn code{font-size:12.5px}
+footer{background:var(--black);border-top:1px solid var(--line-d);padding:38px 0 54px}
+footer .col{display:flex;gap:26px;justify-content:space-between;flex-wrap:wrap}
+footer p{font-size:12.5px;color:var(--w-3);max-width:52ch;margin:0}
+footer .attr{flex-basis:100%;max-width:none;margin-top:4px;color:#5A5A60}
+footer .attr a{font-size:inherit;color:#7A7A82;text-decoration:underline}
+footer ul{list-style:none;display:flex;gap:20px;margin:0;padding:0;flex-wrap:wrap}
+footer a{font-size:12.5px;color:var(--w-2);text-decoration:none}
+footer a:hover{color:var(--w)}
+

@@ -1,0 +1,19 @@
+/* Download section: what’s new button area, recent builds table */
+/* ── download: what's new, recent builds ──────────────── */
+.whatsnew{max-width:560px;margin:26px auto 22px;padding:18px 22px;text-align:left;
+  border:1px solid var(--line-d);border-radius:14px;background:var(--dark-2)}
+.whatsnew .wn-h{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cold);margin:0 0 8px}
+.whatsnew .wn-b{font-size:15.5px;line-height:1.55;color:var(--w-2);margin:0;max-width:none;
+  white-space:pre-line}
+.builds{margin-top:52px}
+.builds .bh{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--w-3);margin:0 auto}
+.builds .tw{margin-top:16px}
+.builds td:last-child{text-align:right}
+.builds td a{color:var(--cold);text-decoration:none;font-weight:500}
+.builds td a:hover{text-decoration:underline}
+.latest{margin-left:10px;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--cold);background:rgb(111 168 220 /.13);
+  vertical-align:1px}
+

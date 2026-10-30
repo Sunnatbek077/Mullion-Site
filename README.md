@@ -1,7 +1,7 @@
 # Mullion — site
 
-Landing page for Mullion. `index.html` holds all the CSS and SVG inline; alongside it
-are `img/` (gameplay stills, the two MacBook cut-outs, the favicon and touch icon, and
+Landing page for Mullion. `index.html` is markup only (the SVG art stays inline); its
+styles are in `css/` and its scripts in `js/` — see **Files** below. Alongside are `img/` (gameplay stills, the two MacBook cut-outs, the favicon and touch icon, and
 `img/dock/` — the Dock's game icons, kept as files rather than base64 in the page),
 `js/` (a vendored three.js) and `models/` (the
 MacBook). Google Fonts is still the only external host. **Serve the folder — don't open
@@ -42,6 +42,41 @@ things: a window at least 900px wide, motion enabled (it is skipped under
 Red Dead screenshot instead — that is the designed fallback, not a failure. Scroll slowly
 through `#games` to scrub the laptop open; it is driven by scroll position, so it will sit
 still if you do.
+
+## Files
+
+No bundler, so the order of the `<link>` and `<script>` tags in `index.html` is the order
+the old inline blocks ran in — keep it. Every file is plain CSS or a plain script wrapped
+in its own IIFE, so nothing is shared between files by accident. If two files need the
+same value, declare it in both (`reduce` is, in `page.js` and `build-sequence.js`).
+
+```
+index.html            markup + the inline SVG sprite and Dock art
+whats-new.html        Changelog page: reads update.json, lists every version
+css/
+  base.css            tokens (:root), page defaults, scenes, the shared column
+  nav.css             top bar, Features dropdown, Download pill, phone menu
+  hero.css            hero, its grid backdrop, the Dock, scroll-reveal helper
+  how-it-works.css    build-animation card, DirectX → Metal path diagram
+  games.css           #games: scrubbed MacBook + the three big screens
+  backdrops.css       per-section backdrops, cursor spotlight, side columns
+  features.css        stat/feature rows, entry-level note
+  pricing.css         spec tables, pricing tiers
+  download.css        Download section, recent-builds table
+  faq-footer.css      FAQ accordion, footnotes
+  download-dialog.css the "your download is starting" dialog
+js/
+  download-dialog.js  the dialog opened by every real download link
+  macbook.js          the 3D MacBook module (?v=N — see below)
+  page.js             `js` class on <html>, phone menu, scroll-reveal
+  build-sequence.js   the "Building — your game" card
+  backdrops.js        backdrops on/off screen, spotlight, Stores chunk canvas
+  site-release.js     download button, What's new link, recent builds (update.json)
+  dock.js             hero Dock hiding over #games and over the CTA
+```
+
+`js/Release.js` is an older standalone version of the release code and is not loaded by
+any page; `site-release.js` is the live one.
 
 ## The 3D MacBook
 
