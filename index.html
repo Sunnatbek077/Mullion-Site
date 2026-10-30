@@ -1686,6 +1686,12 @@ dispatchThreadgroups
   // up. So the list is cut to what update.json says: nothing newer than the
   // live release, "Latest" on exactly that file, and no list at all while
   // nothing is offered. Hidden if the API refuses.
+  //
+  // Older builds are cut too. The admin app's "Older builds blocked" setting
+  // makes the live version the required one: every older Mac is told "Update
+  // Required", so the page must not hand out a zip the app will then refuse.
+  // Only builds at the live version are listed, and a list of one is not shown
+  // — the Download button above already is that build.
   var RELEASES_URL = 'https://api.github.com/repos/Sunnatbek077/mullion-releases/releases/tags/app';
 
   function formatSize(bytes){
@@ -1704,11 +1710,13 @@ dispatchThreadgroups
       return m && {version: m[1], build: m[2] || null, name: a.name,
                    url: a.browser_download_url, size: a.size, at: a.updated_at || a.created_at};
     }).filter(function(b){
-      return b && compareVersions(b.version, live.version) <= 0;
+      // same version, and not a rebuild staged after the live one
+      return b && compareVersions(b.version, live.version) === 0 &&
+             (!live.build || !b.build || compareVersions(b.build, live.build) <= 0);
     }).sort(function(x, y){
       return compareVersions(y.version, x.version) || compareVersions(y.build || 0, x.build || 0);
     }).slice(0, 5);
-    if (!rows.length) return;
+    if (rows.length < 2) return;
 
     rows.forEach(function(b){
       var tr = document.createElement('tr');
