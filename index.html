@@ -3,15 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mullion — Windows games, on your Mac</title>
-<meta name="description" content="Mullion wraps Windows games from Steam, Epic and GOG into real Mac apps that launch from your Dock. DirectX straight to Metal through D3DMetal — no virtual machine, no Windows to install.">
+<title>Play Windows Games on Mac — No VM, No Windows | Mullion</title>
+<meta name="description" content="Mullion turns Steam, Epic and GOG Windows games into real Mac apps that launch from your Dock. No virtual machine, no Windows install. Apple Silicon.">
+<meta name="keywords" content="play windows games on mac, windows games on mac, mac gaming, run windows games on mac, windows game launcher for mac, apple silicon gaming, steam games on mac, epic games mac, gog mac, directx to metal, d3dmetal, game porting toolkit, wine mac, crossover alternative, whisky alternative mac, no virtual machine">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://mullion-runtime.vercel.app/">
 <meta name="google-site-verification" content="83HVRoG02GgfUkKn9wLt3avrx_Kkt-OF6jHi4EA1NV8">
 <meta name="theme-color" content="#000000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mullion">
-<meta property="og:title" content="Mullion — Windows games, on your Mac">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://mullion-runtime.vercel.app/">
+<meta property="og:title" content="Play Windows Games on Mac — No VM, No Windows | Mullion">
 <meta property="og:description" content="Windows games wrapped into real Mac apps that launch from your Dock. No virtual machine, no Windows to install.">
+<meta property="og:image" content="https://mullion-runtime.vercel.app/img/apple-touch-icon.png">
+<meta property="og:image:alt" content="Mullion app icon">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Play Windows Games on Mac — No VM, No Windows | Mullion">
+<meta name="twitter:description" content="Steam, Epic and GOG Windows games as real Mac apps. DirectX to Metal, no virtual machine.">
+<meta name="twitter:image" content="https://mullion-runtime.vercel.app/img/apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Mullion",
+  "url": "https://mullion-runtime.vercel.app/",
+  "description": "Mullion wraps Windows games from Steam, Epic and GOG into real Mac apps that launch from the Dock. DirectX to Metal through D3DMetal, with no virtual machine and no Windows install.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "macOS 27 or later (Apple Silicon)",
+  "image": "https://mullion-runtime.vercel.app/img/apple-touch-icon.png",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free tier with a monthly build limit"
+  },
+  "featureList": [
+    "Turns Windows games into standalone Mac apps",
+    "Steam, Epic Games and GOG support",
+    "DirectX to Metal through D3DMetal",
+    "No virtual machine and no Windows install",
+    "No AI features"
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,7 +175,7 @@ codesign --verify RDR2.app
   <div class="col mid">
     <div class="appicon rv"><svg viewBox="0 0 1024 1024"><use href="#icon"/></svg></div>
     <div class="rv"><a class="chip" href="#specs"><span class="live"></span><span id="heroChip">Public beta</span><span class="ar">→</span></a></div>
-    <h1 class="rv">Discover a whole new level<br>of Mac gaming.<br><span class="grad">Windows games. Now Mac apps.</span></h1>
+    <h1 class="rv">Play Windows games<br>on your Mac.<br><span class="grad">Windows games. Now Mac apps.</span></h1>
     <p class="lede rv">The games your Mac was never supposed to run — each one a real <code>.app</code>, launching from your Dock like anything else. No virtual machine, no Windows to install.</p>
     <div class="cta rv">
       <a class="btn btn-p" id="heroDl" href="#specs" aria-disabled="true">No build published yet</a>
@@ -299,7 +334,7 @@ codesign --verify RDR2.app
   </div>
   <div class="col mid">
     <p class="kicker rv">The wrap</p>
-    <h2 class="rv">Drop a folder.<br>Get an app.</h2>
+    <h2 class="rv">Drop a folder.<br>Get a Mac app.</h2>
     <p class="rv">Mullion reads the folder, finds the executable, clones a prefix, installs what the game needs, and writes a bundle you can drag straight to Applications.</p>
     <div class="build rv" id="bld">
       <div class="hd"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
@@ -353,7 +388,7 @@ dispatchThreadgroups
   </div>
   <div class="col mid">
     <p class="kicker rv">Graphics</p>
-    <h2 class="rv">DirectX to Metal.<br>One hop.</h2>
+    <h2 class="rv">DirectX to Metal.<br>One hop, no VM.</h2>
     <p class="rv">Most Wine setups translate DirectX into Vulkan, then lean on MoltenVK to turn Vulkan into Metal. Mullion runs an engine whose D3D libraries are D3DMetal — no second translation, no Vulkan in the path at all.</p>
     <div class="paths rv">
       <div class="path">
@@ -450,7 +485,7 @@ dispatchThreadgroups
 <section class="scene lite" id="compare">
   <div class="col mid">
     <p class="kicker rv">Compare</p>
-    <h2 class="rv">What else<br>you could use.</h2>
+    <h2 class="rv">Mullion vs CrossOver,<br>Whisky and Heroic.</h2>
     <p class="rv">Every tool here is real, several are excellent, and one of them funds the Wine development all of them depend on. Two rows go against us. They are in the table anyway.</p>
     <div class="tw cmp rv">
       <table>
