@@ -48,3 +48,6 @@ footer .community a.sl{display:inline-flex;align-items:center;gap:8px;padding:7p
   border:1px solid var(--line-d);border-radius:980px;color:var(--w-2);transition:color .2s,border-color .2s,background .2s}
 footer .community a.sl svg{width:14px;height:14px;fill:currentColor}
 footer .community a.sl:hover{color:var(--w);border-color:#3a3a40;background:rgb(255 255 255 /.05)}
+
+footer .community a.sl svg{color:var(--bc)}
+footer .community a.sl:hover{border-color:color-mix(in srgb,var(--bc) 55%,transparent);background:color-mix(in srgb,var(--bc) 12%,transparent)}

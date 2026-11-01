@@ -77,3 +77,15 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
   .nv>ul .soc a{width:44px;height:44px;padding:0;border:0;background:rgb(255 255 255 /.07);color:var(--w);border-radius:12px}
   .nv .soc svg{width:20px;height:20px}
 }
+
+/* Brand colours so each link reads at a glance */
+.soc a[data-s=discord],.community a[data-s=discord]{--bc:#5865F2}
+.soc a[data-s=youtube],.community a[data-s=youtube]{--bc:#FF3B3B}
+.soc a[data-s=instagram],.community a[data-s=instagram]{--bc:#F0539B}
+.soc a[data-s=reddit],.community a[data-s=reddit]{--bc:#FF5A1F}
+.nv .soc a svg{color:var(--bc);opacity:.9;transition:opacity .2s,transform .2s}
+.nv .soc a{width:32px;height:32px}
+.nv .soc svg{width:18px;height:18px}
+.nv .soc a:hover{background:color-mix(in srgb,var(--bc) 16%,transparent)}
+.nv .soc a:hover svg{opacity:1;transform:scale(1.08)}
+@media(max-width:820px){.nv .soc svg{width:22px;height:22px}.nv>ul .soc a{width:46px;height:46px}}
