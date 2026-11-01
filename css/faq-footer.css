@@ -38,3 +38,13 @@ footer ul{list-style:none;display:flex;gap:20px;margin:0;padding:0;flex-wrap:wra
 footer a{font-size:12.5px;color:var(--w-2);text-decoration:none}
 footer a:hover{color:var(--w)}
 
+
+/* footer: community links */
+footer .community{flex-basis:100%;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding-top:22px;margin-top:2px;border-top:1px solid var(--line-d)}
+footer .community>span{font-size:12.5px;color:var(--w-3)}
+footer .community ul{gap:8px}
+footer .community a.sl{display:inline-flex;align-items:center;gap:8px;padding:7px 13px 7px 11px;
+  border:1px solid var(--line-d);border-radius:980px;color:var(--w-2);transition:color .2s,border-color .2s,background .2s}
+footer .community a.sl svg{width:14px;height:14px;fill:currentColor}
+footer .community a.sl:hover{color:var(--w);border-color:#3a3a40;background:rgb(255 255 255 /.05)}

@@ -64,3 +64,16 @@ nav.open .mt span:last-child{top:19.5px;transform:rotate(-45deg)}
 @media(prefers-reduced-motion:reduce){.mt span,.nv>ul,.nv .sub,.nv .has>a::after{transition:none}}
 
 
+
+/* Community icons (Discord, YouTube, Instagram, Reddit) */
+.nv .soc{display:flex;align-items:center;gap:2px;margin:0 -4px 0 0}
+.nv .soc a{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;color:var(--w-2);
+  transition:color .2s,background .2s}
+.nv .soc svg{width:16px;height:16px;fill:currentColor}
+.nv .soc a:hover{background:rgb(255 255 255 /.08);color:var(--w)}
+@media(max-width:1060px){.nv ul{gap:16px}}
+@media(max-width:820px){
+  .nv>ul>li.soc{display:flex;gap:10px;padding:16px 0 4px;margin:0;border-bottom:1px solid var(--line-d)}
+  .nv>ul .soc a{width:44px;height:44px;padding:0;border:0;background:rgb(255 255 255 /.07);color:var(--w);border-radius:12px}
+  .nv .soc svg{width:20px;height:20px}
+}
